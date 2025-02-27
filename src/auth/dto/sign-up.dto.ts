@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { Match } from '../decorators';
 
 export class CreateUser {
   @IsEmail()
@@ -14,9 +15,9 @@ export class CreateUser {
   @Matches(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
   password: string;
 
-  //   @IsString()
-  //   @IsNotEmpty()
-  //   //Match is decorator
-  //   @Matches(Match, ['password'])
-  //   confirmPassword: string;
+  @IsString()
+  @IsNotEmpty()
+  //Match is decorator
+  @Match('password', { message: 'Passwords do not match' })
+  confirmPassword: string;
 }
