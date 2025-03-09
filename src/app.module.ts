@@ -10,6 +10,8 @@ import { AuthModule } from './auth/auth.module';
 // import { MongodbService } from './mongodb/mongodb.service';
 import { MongodbModule } from './mongodb/mongodb.module';
 import { MongooseModule } from '@nestjs/mongoose';
+// import { User, UserSchema } from 'src/mongodb/schemas';
+// import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     MongodbModule,
     MongooseModule.forRoot(process.env.DB_CONNECT_LINK as string),
   ],
+  // exports: [MongodbModule],
   // controllers: [BookController],
   // providers: [UsersService, AuthService, MongodbService],
 })
