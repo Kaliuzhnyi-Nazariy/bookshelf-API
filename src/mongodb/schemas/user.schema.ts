@@ -14,12 +14,12 @@ export class User {
   email: string;
 
   @Prop({
-    required: true,
+    // required: true,
     type: String,
     // match: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   })
   @IsString()
-  @IsNotEmpty()
+  // @IsNotEmpty()
   password: string;
 
   @Prop({ default: [] })
