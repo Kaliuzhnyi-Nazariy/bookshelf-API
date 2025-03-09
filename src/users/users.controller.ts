@@ -1,4 +1,36 @@
-import { Controller } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Put,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
+import { UsersService } from './users.service';
+import { Types } from 'mongoose';
+import { GetUser } from 'src/auth/decorators';
+import { UltimateGuard } from 'src/auth/guards';
+import { UserDTO } from './dto';
+import { MongooseExceptionFilter } from 'src/helper/HandleMongooseError';
 
+@UseGuards(UltimateGuard)
+// @UseGuards(JWTGuard, DiscordGuard)
 @Controller('users')
-export class UsersController {}
+@UseFilters(new MongooseExceptionFilter())
+export class UsersController {
+  constructor(private usersService: UsersService) {}
+
+  @Get('me')
+  getUser(@GetUser() user: UserDTO) {
+    // console.log(user);
+    return user;
+  }
+
+  @Put()
+  updateUser(
+    @GetUser('_id') userId: string | Types.ObjectId,
+    @Body() dto: UserDTO,
+  ) {
+    return this.usersService.updateUser(userId, dto);
+  }
+}
