@@ -1,4 +1,5 @@
 import { IsOptional, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class UpdateBook {
   @IsString()
@@ -12,4 +13,6 @@ export class UpdateBook {
   @IsString()
   @IsOptional()
   descripionAndOpinion?: string;
+
+  owner: Types.ObjectId;
 }
