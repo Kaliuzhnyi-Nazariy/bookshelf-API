@@ -47,10 +47,10 @@ export class AuthController {
     return this.authService.discordAuth(req, res);
   }
 
-  @Get('check')
-  check_func(@Req() req: Request, @Res() res: Response) {
-    return this.authService.discordAuthRedirect(req, res);
-  }
+  // @Get('check')
+  // check_func(@Req() req: Request, @Res() res: Response) {
+  //   return this.authService.discordAuthRedirect(req, res);
+  // }
 
   @Delete('logout')
   @UseGuards(JWTGuard)

@@ -81,18 +81,19 @@ export class AuthService {
   discordAuth(@Req() req: Request | undefined, @Res() res: Response) {
     // res.send('hello');
     res.cookie('userDisInfo', req?.user);
-    return res.redirect('http://localhost:3500/auth/check');
+    // return res.redirect('http://localhost:3500/auth/check');
+    return res.status(200).json(req?.user);
   }
 
-  discordAuthRedirect(
-    @Req()
-    req: Request,
-    @Res() res: Response,
-  ) {
-    //here I will be needed to work on frontend. Add passwords
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return res.status(200).json({ userInfo: req?.cookies?.userDisInfo });
-  }
+  // discordAuthRedirect(
+  //   @Req()
+  //   req: Request,
+  //   @Res() res: Response,
+  // ) {
+  //   //here I will be needed to work on frontend. Add passwords
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  //   return res.status(200).json({ userInfo: req?.cookies?.userDisInfo });
+  // }
 
   logout(@Res() res: Response) {
     res.clearCookie('accessToken');
