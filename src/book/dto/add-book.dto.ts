@@ -14,5 +14,7 @@ export class AddBook {
   @IsOptional()
   descripionAndOpinion?: string;
 
+  imageUrl?: string;
+
   owner: Types.ObjectId;
 }
