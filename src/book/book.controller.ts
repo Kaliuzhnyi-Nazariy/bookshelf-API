@@ -6,8 +6,11 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AddBook, UpdateBook } from './dto';
 import { UltimateGuard } from 'src/auth/guards';
 import { GetUser } from 'src/auth/decorators';
@@ -33,17 +36,24 @@ export class BookController {
   }
 
   @Post()
-  addBookToShelf(@GetUser() userId: Types.ObjectId, @Body() data: AddBook) {
-    return this.bookService.addBook(userId, data);
+  @UseInterceptors(FileInterceptor('file'))
+  addBookToShelf(
+    @GetUser() userId: Types.ObjectId,
+    @Body() data: AddBook,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.bookService.addBook(userId, data, file);
   }
 
   @Put(':bookId')
+  @UseInterceptors(FileInterceptor('file'))
   updateBook(
     @GetUser('_id') userId: Types.ObjectId,
     @Param('bookId') bookId: Types.ObjectId,
     @Body() dto: UpdateBook,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.bookService.updateBook(userId, bookId, dto);
+    return this.bookService.updateBook(userId, bookId, dto, file);
   }
 
   @Delete(':bookId')

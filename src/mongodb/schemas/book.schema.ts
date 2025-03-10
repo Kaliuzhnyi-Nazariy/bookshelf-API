@@ -21,6 +21,10 @@ export class Book {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   @IsString()
   owner: Types.ObjectId;
+
+  @Prop({ type: String })
+  @IsString()
+  imageUrl?: string;
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);
