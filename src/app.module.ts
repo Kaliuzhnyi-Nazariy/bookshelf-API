@@ -12,6 +12,8 @@ import { MongodbModule } from './mongodb/mongodb.module';
 import { MongooseModule } from '@nestjs/mongoose';
 // import { User, UserSchema } from 'src/mongodb/schemas';
 // import { JwtModule } from '@nestjs/jwt';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { MongooseModule } from '@nestjs/mongoose';
     AuthModule,
     MongodbModule,
     MongooseModule.forRoot(process.env.DB_CONNECT_LINK as string),
+    CloudinaryModule,
   ],
+  providers: [CloudinaryService],
   // exports: [MongodbModule],
   // controllers: [BookController],
   // providers: [UsersService, AuthService, MongodbService],
