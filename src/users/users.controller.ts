@@ -8,10 +8,10 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Types } from 'mongoose';
-import { GetUser } from 'src/auth/decorators';
-import { UltimateGuard } from 'src/auth/guards';
+import { GetUser } from '../auth/decorators';
+import { UltimateGuard } from '../auth/guards';
 import { UserDTO } from './dto';
-import { MongooseExceptionFilter } from 'src/helper/HandleMongooseError';
+import { MongooseExceptionFilter } from '../helper/HandleMongooseError';
 
 @UseGuards(UltimateGuard)
 // @UseGuards(JWTGuard, DiscordGuard)
