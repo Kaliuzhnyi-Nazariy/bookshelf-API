@@ -1,25 +1,41 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { App } from 'supertest/types';
-import { AppModule } from './../src/app.module';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+// import { MongodbService } from 'src/mongodb/mongodb.service';
+import { Test } from '@nestjs/testing';
+import { AppModule } from '../src/app.module';
+import * as pactum from 'pactum';
+// import { CreateUser } from '../src/auth/dto';
+import { discordTesting, logoutTest, signIn, signUp } from './Auth';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+describe('App e2e', () => {
+  let app: INestApplication;
+  //   let mongoDB: MongodbService;
 
-  beforeEach(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+    app = moduleRef.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+      }),
+    );
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+    await app.init();
+
+    // mongoDB = app.get(MongodbService);
+
+    await app.listen(3500);
+    pactum.request.setBaseUrl('http://localhost:3500');
   });
+  afterAll(async () => {
+    if (app) {
+      await app.close();
+    }
+  });
+  signUp();
+  signIn();
+  discordTesting();
+  logoutTest();
 });
