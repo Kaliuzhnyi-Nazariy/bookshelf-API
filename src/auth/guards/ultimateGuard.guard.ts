@@ -20,6 +20,7 @@ export class UltimateGuard implements CanActivate {
     try {
       const jwtRes = await this.JwtGuard.canActivate(context);
       if (jwtRes) return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // console.log(error);
       /* empty */
@@ -28,6 +29,7 @@ export class UltimateGuard implements CanActivate {
     try {
       const DisRes = await this.DSGuard.canActivate(context);
       if (DisRes) return true;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       // console.log(error);
     }
