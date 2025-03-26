@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Model, Types } from 'mongoose';
 import { AddBook, UpdateBook } from './dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Book } from 'src/mongodb/schemas';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { Book } from '../mongodb/schemas';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class BookService {
@@ -33,6 +37,8 @@ export class BookService {
     let coverImage: string = '';
 
     if (file) {
+      if (file.size > 1024 * 1024)
+        throw new BadRequestException('file should be less than 1MB');
       const uploadResult = await this.cloudinaryService.uploadImage(file);
       coverImage = uploadResult.secure_url;
     }
