@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { BookService } from './book.service';
 import { BookController } from './book.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Book, BookSchema } from 'src/mongodb/schemas';
+import { Book, BookSchema } from '../mongodb/schemas';
 import { JwtModule } from '@nestjs/jwt';
-import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { CloudinaryModule } from '../cloudinary/cloudinary.module';
 
 @Module({
   imports: [

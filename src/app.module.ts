@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 // import { MongodbService } from './mongodb/mongodb.service';
 import { MongodbModule } from './mongodb/mongodb.module';
 import { MongooseModule } from '@nestjs/mongoose';
-// import { User, UserSchema } from 'src/mongodb/schemas';
+// import { User, UserSchema } from '../mongodb/schemas';
 // import { JwtModule } from '@nestjs/jwt';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
