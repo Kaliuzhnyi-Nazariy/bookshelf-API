@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AddBook, UpdateBook } from './dto';
-import { UltimateGuard } from 'src/auth/guards';
-import { GetUser } from 'src/auth/decorators';
+import { UltimateGuard } from '../auth/guards';
+import { GetUser } from '../auth/decorators';
 import { BookService } from './book.service';
 import { Types } from 'mongoose';
 
