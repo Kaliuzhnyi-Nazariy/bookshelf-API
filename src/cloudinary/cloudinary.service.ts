@@ -16,7 +16,22 @@ export class CloudinaryService {
     return new Promise((res, rej) => {
       cloudinary.uploader
         .upload_stream(
-          { folder: 'bookshelf' },
+          {
+            folder: 'bookshelf',
+            transformation: [
+              {
+                width: 400,
+                height: 800,
+                crop: 'limit',
+              },
+              {
+                gravity: 'center',
+                crop: 'fill',
+              },
+              { quality: 'auto' },
+              { fetch_format: 'auto' },
+            ],
+          },
           (err: Error | null | undefined, result: UploadApiResponse) => {
             if (err) {
               rej(err);
