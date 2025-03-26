@@ -7,7 +7,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { CreateUser, LoginUser } from './dto';
-import { User } from 'src/mongodb/schemas';
+import { User } from '../mongodb/schemas';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
@@ -21,6 +21,7 @@ export class AuthService {
     @InjectModel(User.name) private userSchema: Model<User>,
     private jwt: JwtService,
     private config: ConfigService,
+    @InjectModel(User.name) private User: Model<User>,
   ) {}
 
   async signin(dto: LoginUser, @Res() res: Response) {
@@ -40,7 +41,7 @@ export class AuthService {
 
     const { email, name, _id } = user;
 
-    return res.send({ email, name, _id });
+    return res.send({ email, name, _id, accessToken });
   }
 
   async signup(dto: CreateUser, @Res() res: Response) {
@@ -68,7 +69,7 @@ export class AuthService {
       maxAge: 23 * 60 * 60 * 1000,
     });
 
-    return res.send({ name, email, _id });
+    return res.send({ name, email, _id, accessToken });
   }
 
   // async create(createCatDto: CreateCatDto): Promise<Cat> {
@@ -76,9 +77,45 @@ export class AuthService {
   //   return createdCat.save();
   // }
 
+  async discordAuth(@Req() req: Request | undefined, @Res() res: Response) {
+    // res.send('hello');
+    res.cookie('userDisInfo', req?.user);
+    console.log(req?.user);
+
+    if (!req?.user) {
+      return res
+        .status(401)
+        .json({ message: 'Unauthorized: No user data received' });
+    }
+
+    const { name, email } = req?.user as {
+      name?: string;
+      email?: string;
+    };
+
+    console.log('name: ', name);
+    console.log('email: ', email);
+
+    if (!name || !email)
+      return res.status(404).json({ message: 'Wrong credentials! Try again!' });
+
+    const newUser = await this.User.create({
+      name,
+      email,
+      password: 'Abcde12!',
+    });
+
+    // return res.redirect('http://localhost:3500/auth/check');
+    return res.status(200).json({
+      _id: newUser?._id,
+      name: newUser.name,
+      email: newUser.email,
+    });
+  }
+
   // here will be created user using email and nickname used in Discord (with standart model)
 
-  discordAuth(@Req() req: Request | undefined, @Res() res: Response) {
+  redirectDiscordAuth(@Req() req: Request | undefined, @Res() res: Response) {
     // res.send('hello');
     res.cookie('userDisInfo', req?.user);
     // return res.redirect('http://localhost:3500/auth/check');
@@ -97,7 +134,7 @@ export class AuthService {
 
   logout(@Res() res: Response) {
     res.clearCookie('accessToken');
-    return res.status(204);
+    return res.status(204).json();
     // const user = await this.userSchema.findById();ExceptionsHandler
   }
 
