@@ -1,0 +1,6 @@
+{
+  "watch": ["test/test.connection.db.ts"],
+  "ext": "js,json,ts,tson",
+  "exec": "ts-node test/test.connection.db.ts",
+  "ignore": ["node_modules", "dist"]
+}
