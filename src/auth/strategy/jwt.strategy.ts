@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
-import { User } from 'src/mongodb/schemas';
+import { User } from '../../mongodb/schemas';
 import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
 
@@ -16,8 +16,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-          return req.cookies?.accessToken as string;
+          if (req.headers.cookie) {
+            return req.headers.cookie;
+          }
+          if (req.headers['set-cookie']) {
+            // console.log('console.cookies', req.headers['set-cookie'][0]);
+
+            return req.headers['set-cookie'][0];
+          }
+          if (req.headers.authorization?.startsWith('Bearer ')) {
+            return req.headers.authorization.split(' ')[1]; // Remove "Bearer" prefix
+          }
+          return null;
         },
       ]),
       ignoreExpiration: false,
@@ -26,7 +36,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   async validate(payload: { email: string }) {
-    const user = await this.User.findOne({ email: payload.email });
+    const user = await this.User.findOne({ email: payload.email }).select(
+      '-password',
+    );
     return { _id: user?._id };
   }
 }
@@ -36,7 +48,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 // import { Injectable } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
 // import { Model } from 'mongoose';
-// import { User } from 'src/mongodb/schemas';
+// import { User } from '../mongodb/schemas';
 // import { InjectModel } from '@nestjs/mongoose';
 
 // @Injectable()
