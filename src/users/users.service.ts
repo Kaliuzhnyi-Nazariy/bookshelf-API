@@ -3,25 +3,33 @@ import {
   HttpException,
   // HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { User } from '../mongodb/schemas';
-import { UserDTO } from './dto';
+import { UpdateUserDTO } from './dto';
+import * as argon from 'argon2';
 
 @Injectable()
 export class UsersService {
   constructor(@InjectModel(User.name) private UserSchema: Model<User>) {}
 
-  async updateUser(userId: string | Types.ObjectId, dto: UserDTO) {
+  async updateUser(userId: string | Types.ObjectId, dto: UpdateUserDTO) {
     const user = await this.UserSchema.findById(userId);
 
     if (!user) throw new ForbiddenException('User not found');
 
     try {
-      const newUser = await this.UserSchema.findByIdAndUpdate(userId, dto, {
-        new: true,
-      });
+      const hashedPassword = await argon.hash(dto.password);
+
+      const newUser = await this.UserSchema.findByIdAndUpdate(
+        userId,
+        { ...dto, password: hashedPassword },
+        {
+          new: true,
+        },
+      );
 
       if (!newUser) {
         const error = 'Something went wrong!';
@@ -54,5 +62,15 @@ export class UsersService {
 
     // const { name, email, _id } = newUser;
     // return { name, email, _id };
+  }
+
+  async deleteUser(userId: Types.ObjectId) {
+    const user = await this.UserSchema.findById(userId);
+
+    if (!user) throw new NotFoundException('User not found!');
+
+    await this.UserSchema.findByIdAndDelete(userId);
+
+    return;
   }
 }

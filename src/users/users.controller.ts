@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Put,
   UseFilters,
@@ -10,13 +11,13 @@ import { UsersService } from './users.service';
 import { Types } from 'mongoose';
 import { GetUser } from '../auth/decorators';
 import { UltimateGuard } from '../auth/guards';
-import { UserDTO } from './dto';
+import { UpdateUserDTO, UserDTO } from './dto';
 import { MongooseExceptionFilter } from '../helper/HandleMongooseError';
 
+@UseFilters(new MongooseExceptionFilter())
 @UseGuards(UltimateGuard)
 // @UseGuards(JWTGuard, DiscordGuard)
 @Controller('users')
-@UseFilters(new MongooseExceptionFilter())
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
@@ -29,8 +30,13 @@ export class UsersController {
   @Put()
   updateUser(
     @GetUser('_id') userId: string | Types.ObjectId,
-    @Body() dto: UserDTO,
+    @Body() dto: UpdateUserDTO,
   ) {
     return this.usersService.updateUser(userId, dto);
+  }
+
+  @Delete()
+  deleteUser(@GetUser('_id') userId: Types.ObjectId) {
+    return this.usersService.deleteUser(userId);
   }
 }
