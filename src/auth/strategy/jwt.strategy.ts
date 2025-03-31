@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
           if (req.headers.cookie) {
-            return req.headers.cookie;
+            return req.headers.cookie.split('=')[1];
           }
           if (req.headers['set-cookie']) {
             // console.log('console.cookies', req.headers['set-cookie'][0]);
@@ -37,9 +37,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: { email: string }) {
     const user = await this.User.findOne({ email: payload.email }).select(
-      '-password',
+      '-password -__v',
     );
-    return { _id: user?._id };
+    return user;
   }
 }
 

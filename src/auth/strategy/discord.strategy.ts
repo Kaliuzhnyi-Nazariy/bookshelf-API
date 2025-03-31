@@ -3,7 +3,7 @@ import { Strategy } from 'passport-discord';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
-import { User } from 'src/mongodb/schemas';
+import { User } from '../../mongodb/schemas';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
@@ -21,17 +21,29 @@ export class DiscordStrategy extends PassportStrategy(Strategy, 'Discord') {
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { username, email } = profile;
+    const { username, email } = profile as { username: string; email: string };
     // console.log('profile: ', profile);
 
-    if (!email) {
-      throw new ForbiddenException('No email provided by Discord');
+    // console.log('username in discord: ', username);
+    // console.log('email in discord: ', email);
+
+    if (!email || !username) {
+      throw new ForbiddenException('No credentials provided by Discord');
     }
 
     // Check if user already exists
     const user = await this.User.findOne({ email });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return { _id: user?._id, name: username, email };
+
+    // console.log('all data: ', {
+    //   _id: user?._id,
+    //   name: username ?? 'No data',
+    //   email: email ?? 'No data',
+    // });
+
+    return {
+      _id: user?._id,
+      name: username ?? 'No data',
+      email: email ?? 'No data',
+    };
   }
 }
