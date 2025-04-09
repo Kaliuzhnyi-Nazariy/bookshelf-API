@@ -4,18 +4,20 @@ import {
   Delete,
   Get,
   Put,
+  Res,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Types } from 'mongoose';
 import { GetUser } from '../auth/decorators';
-import { UltimateGuard } from '../auth/guards';
+import { JWTGuard } from '../auth/guards';
 import { UpdateUserDTO, UserDTO } from './dto';
 import { MongooseExceptionFilter } from '../helper/HandleMongooseError';
+import { Response } from 'express';
 
 @UseFilters(new MongooseExceptionFilter())
-@UseGuards(UltimateGuard)
+@UseGuards(JWTGuard)
 // @UseGuards(JWTGuard, DiscordGuard)
 @Controller('users')
 export class UsersController {
@@ -36,7 +38,7 @@ export class UsersController {
   }
 
   @Delete()
-  deleteUser(@GetUser('_id') userId: Types.ObjectId) {
-    return this.usersService.deleteUser(userId);
+  deleteUser(@GetUser('_id') userId: Types.ObjectId, @Res() res: Response) {
+    return this.usersService.deleteUser(userId, res);
   }
 }

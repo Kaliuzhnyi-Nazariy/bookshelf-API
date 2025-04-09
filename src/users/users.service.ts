@@ -4,16 +4,21 @@ import {
   // HttpStatus,
   Injectable,
   NotFoundException,
+  Res,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { User } from '../mongodb/schemas';
+import { Book, User } from '../mongodb/schemas';
 import { UpdateUserDTO } from './dto';
 import * as argon from 'argon2';
+import { Response } from 'express';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private UserSchema: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private UserSchema: Model<User>,
+    @InjectModel(Book.name) private BookSchema: Model<Book>,
+  ) {}
 
   async updateUser(userId: string | Types.ObjectId, dto: UpdateUserDTO) {
     const user = await this.UserSchema.findById(userId);
@@ -64,13 +69,15 @@ export class UsersService {
     // return { name, email, _id };
   }
 
-  async deleteUser(userId: Types.ObjectId) {
+  async deleteUser(userId: Types.ObjectId, @Res() res: Response) {
     const user = await this.UserSchema.findById(userId);
+
+    await this.BookSchema.deleteMany({ owner: userId });
 
     if (!user) throw new NotFoundException('User not found!');
 
     await this.UserSchema.findByIdAndDelete(userId);
 
-    return;
+    return res.clearCookie('accessToken').status(204).json();
   }
 }
