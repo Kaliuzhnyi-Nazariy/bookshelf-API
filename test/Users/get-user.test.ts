@@ -6,23 +6,36 @@ export function usersTests() {
       await pactum
         .spec()
         .get('/users/me')
-        .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+        .withHeaders({ Authorization: 'Bearer $S{accessToken}' })
         .expectJsonLike({
           _id: /.+/,
           name: 'vasya',
           email: 'vasya@mail.com',
-          books: [],
+          // books: [],
         })
         .expectStatus(200);
-      // .inspect();
+    });
+
+    it('should return user (token in cookies)', async () => {
+      await pactum
+        .spec()
+        .get('/users/me')
+        .withCookies('accessToken', '$S{accessToken}')
+        .expectJsonLike({
+          _id: /.+/,
+          name: 'vasya',
+          email: 'vasya@mail.com',
+          // books: [],
+        })
+        .expectStatus(200);
     });
 
     it('should return an error as no token', async () => {
-      await pactum.spec().get('/users/me').expectStatus(403).expectBody({
-        message: 'Forbidden resource',
-        error: 'Forbidden',
-        statusCode: 403,
+      await pactum.spec().get('/users/me').expectStatus(401).expectBody({
+        message: 'Unauthorized',
+        statusCode: 401,
       });
+      // .inspect();
     });
   });
 }

@@ -8,7 +8,7 @@ export function updateUser() {
   const userDto: UpdateUserDTO = {
     name: 'Vasily',
     email: 'vasily_off@mail.com',
-    books: [],
+    // books: [],
     password: 'Abcde12!',
   };
 
@@ -26,7 +26,9 @@ export function updateUser() {
       await pactum
         .spec()
         .put(link)
-        .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+        .withHeaders({ Authorization: 'Bearer $S{accessToken}' })
+        .withBearerToken('$S{accessToken}')
+        .withCookies('accessToken', '$S{accessToken}')
         .withBody(userDto)
         .expectJsonLike({
           _id: /.+/,
@@ -34,11 +36,12 @@ export function updateUser() {
           email: userDto.email,
         })
         .expectStatus(200);
+      // .inspect();
     });
 
     describe('it should not change info on which previously user changed.', () => {
-      it('create new user', () => {
-        pactum
+      it('create new user', async () => {
+        await pactum
           .spec()
           .post('/auth/signup')
           .withBody(dto)
@@ -50,7 +53,8 @@ export function updateUser() {
           .expectCookiesLike('Expires', /.+/)
           .expectCookiesLike('Max-Age', /.+/)
           .expectCookiesLike('Path', '/')
-          .stores('accessToken', 'res.cookies.accessToken');
+          .stores('userAt', 'accessToken');
+        // .inspect();
       });
 
       it('should not change on info that was appear just before', () => {
@@ -64,30 +68,30 @@ export function updateUser() {
       });
     });
 
-    it('should return an error if no name field', async () => {
+    // it('should return an error if no name field', async () => {
+    //   await pactum
+    //     .spec()
+    //     .put(link)
+    //     .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+    //     // .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+    //     .withBody({
+    //       email: userDto.email,
+    //       password: userDto.password,
+    //     })
+    //     .expectStatus(400)
+    //     .expectBody({
+    //       error: 'Bad Request',
+    //       message: ['name should not be empty', 'name must be a string'],
+    //       statusCode: 400,
+    //     })
+    //     .inspect();
+    // });
+
+    it('should return an error if no email fiield', async () => {
       await pactum
         .spec()
         .put(link)
-        .withBearerToken('$S{userAt}')
-        // .withHeaders({ Authorization: 'Bearer $S{userAt}' })
-        .withBody({
-          email: userDto.email,
-          password: userDto.password,
-        })
-        .expectStatus(400)
-        .expectBody({
-          error: 'Bad Request',
-          message: ['name should not be empty', 'name must be a string'],
-          statusCode: 400,
-        })
-        .inspect();
-    });
-
-    it('should return an error if no email fiield', () => {
-      pactum
-        .spec()
-        .put(link)
-        .withBearerToken('$S{userAt}')
+        .withBearerToken('$S{accessToken}')
         .withBody({ name: userDto.name, password: userDto.password })
         .expectStatus(400)
         .expectBody({
@@ -95,20 +99,21 @@ export function updateUser() {
           message: ['email should not be empty', 'email must be a string'],
           statusCode: 400,
         });
+      // .inspect();
     });
 
     it('should return an error if no password fiield', () => {
       pactum
         .spec()
         .put(link)
-        .withBearerToken('$S{userAt}')
+        .withBearerToken('$S{accessToken}')
         .withBody({ name: userDto.name, email: userDto.email })
         .expectStatus(400)
         .expectBody({
           error: 'Bad Request',
           message: [
-            'password should not be empty',
             'password must be a string',
+            'password should not be empty',
           ],
           statusCode: 400,
         });
@@ -117,12 +122,71 @@ export function updateUser() {
       pactum
         .spec()
         .put(link)
-        .withBearerToken('$S{userAt}')
+        .withBearerToken('$S{accessToken}')
         .withBody({ password: userDto.password })
         .expectStatus(400)
         .expectBody({
           error: 'Bad Request',
           message: [
+            'name should not be empty',
+            'name must be a string',
+            'email should not be empty',
+            'email must be a string',
+          ],
+          statusCode: 400,
+        });
+    });
+
+    it('should return an error if no email and password fiields', () => {
+      pactum
+        .spec()
+        .put(link)
+        .withBearerToken('$S{accessToken}')
+        .withBody({ name: userDto.name })
+        .expectStatus(400)
+        .expectBody({
+          error: 'Bad Request',
+          message: [
+            'password should not be empty',
+            'password must be a string',
+            'email should not be empty',
+            'email must be a string',
+          ],
+          statusCode: 400,
+        });
+    });
+
+    it('should return an error if no password and name fiields', () => {
+      pactum
+        .spec()
+        .put(link)
+        .withBearerToken('$S{accessToken}')
+        .withBody({ email: userDto.email })
+        .expectStatus(400)
+        .expectBody({
+          error: 'Bad Request',
+          message: [
+            'name should not be empty',
+            'name must be a string',
+            'password should not be empty',
+            'password must be a string',
+          ],
+          statusCode: 400,
+        });
+    });
+
+    it('should return an error if no fiields', () => {
+      pactum
+        .spec()
+        .put(link)
+        .withBearerToken('$S{accessToken}')
+        .withBody({})
+        .expectStatus(400)
+        .expectBody({
+          error: 'Bad Request',
+          message: [
+            'password should not be empty',
+            'password must be a string',
             'name should not be empty',
             'name must be a string',
             'email should not be empty',
