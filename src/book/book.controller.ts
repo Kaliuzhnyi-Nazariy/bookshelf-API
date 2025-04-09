@@ -12,24 +12,24 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AddBook, UpdateBook } from './dto';
-import { UltimateGuard } from '../auth/guards';
+import { JWTGuard } from '../auth/guards';
 import { GetUser } from '../auth/decorators';
 import { BookService } from './book.service';
 import { Types } from 'mongoose';
 
-@UseGuards(UltimateGuard)
+@UseGuards(JWTGuard)
 @Controller('book')
 export class BookController {
   constructor(private bookService: BookService) {}
 
   @Get('')
-  allBooks(@GetUser() userId: Types.ObjectId) {
+  allBooks(@GetUser('_id') userId: Types.ObjectId) {
     return this.bookService.getAllBooks(userId);
   }
 
   @Get(':id')
   getBookById(
-    @GetUser() userId: Types.ObjectId,
+    @GetUser('_id') userId: Types.ObjectId,
     @Param('id') id: Types.ObjectId,
   ) {
     return this.bookService.getBook(userId, id);
@@ -38,7 +38,7 @@ export class BookController {
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   addBookToShelf(
-    @GetUser() userId: Types.ObjectId,
+    @GetUser('_id') userId: Types.ObjectId,
     @Body() data: AddBook,
     @UploadedFile() file: Express.Multer.File,
   ) {
@@ -58,7 +58,7 @@ export class BookController {
 
   @Delete(':bookId')
   deleteBook(
-    @GetUser() userId: Types.ObjectId,
+    @GetUser('_id') userId: Types.ObjectId,
     @Param('bookId') bookId: Types.ObjectId,
   ) {
     return this.bookService.deleteBook(userId, bookId);

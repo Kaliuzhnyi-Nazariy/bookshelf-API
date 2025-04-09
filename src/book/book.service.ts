@@ -26,6 +26,8 @@ export class BookService {
       owner: userId._id,
     });
 
+    if (!book) throw new NotFoundException('Book have not been found');
+
     return book;
   }
 
@@ -46,6 +48,7 @@ export class BookService {
     const res = await this.BookSchema.create({
       title: dto.title,
       author: dto.author,
+      descripionAndOpinion: dto.descripionAndOpinion || '',
       owner: userId._id,
       imageUrl: coverImage,
     });
@@ -59,7 +62,7 @@ export class BookService {
     dto: UpdateBook,
     file: Express.Multer.File,
   ) {
-    let imageUrl: string = dto.imageUrl;
+    let imageUrl: string = dto.imageUrl || '';
 
     if (file) {
       const resultURL = await this.cloudinaryService.uploadImage(file);
@@ -78,10 +81,11 @@ export class BookService {
     const updatedBook = await this.BookSchema.findByIdAndUpdate(
       bookId,
       {
-        title: dto.title,
-        descripionAndOpinion: dto.descripionAndOpinion,
-        author: dto.author,
-        imageUrl: dto.imageUrl,
+        title: dto.title || bookToUpdate.title,
+        descripionAndOpinion:
+          dto.descripionAndOpinion || bookToUpdate.descripionAndOpinion,
+        author: dto.author || bookToUpdate.author,
+        imageUrl: dto.imageUrl || bookToUpdate.imageUrl,
       },
       { new: true },
     );

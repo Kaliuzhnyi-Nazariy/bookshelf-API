@@ -4,17 +4,17 @@ import { Types } from 'mongoose';
 export class UpdateBook {
   @IsString()
   @IsOptional()
-  title: string;
+  title?: string;
 
   @IsString()
   @IsOptional()
-  author: string;
+  author?: string;
 
   @IsString()
   @IsOptional()
   descripionAndOpinion?: string;
 
-  imageUrl: string;
+  imageUrl?: string;
 
-  owner: Types.ObjectId;
+  owner?: Types.ObjectId;
 }
