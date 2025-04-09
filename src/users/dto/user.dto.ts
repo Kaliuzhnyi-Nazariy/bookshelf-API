@@ -10,7 +10,7 @@ export class UserDTO {
   @IsNotEmpty()
   email: string;
 
-  books: Types.ObjectId[];
+  // books: Types.ObjectId[];
 }
 
 export class UpdateUserDTO {
@@ -22,7 +22,7 @@ export class UpdateUserDTO {
   @IsNotEmpty()
   email: string;
 
-  books: Types.ObjectId[];
+  // books: Types.ObjectId[];
 
   @IsNotEmpty()
   @IsString()
