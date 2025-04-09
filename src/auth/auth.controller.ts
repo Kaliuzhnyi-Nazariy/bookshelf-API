@@ -14,8 +14,8 @@ import { CreateUser, LoginUser } from './dto';
 import { AuthService } from './auth.service';
 import {
   DiscordGuard,
-  // JWTGuard,
-  UltimateGuard,
+  JWTGuard,
+  // JWTGuard,1
 } from './guards';
 // import { GetUser } from './decorators';
 // import { Types } from 'mongoose';
@@ -42,17 +42,31 @@ export class AuthController {
   @UseGuards(DiscordGuard)
   discordLogin(@Req() req: Request, @Res() res: Response) {
     // This route redirects to Discord for authentication
-    console.log(
-      'Redirecting to Discord with:',
-      process.env.REDIRECT_URI_DISCORD,
-    );
+    // console.log(
+    //   'Redirecting to Discord with:',
+    //   process.env.REDIRECT_URI_DISCORD,
+    // );
     return this.authService.discordAuth(req, res);
   }
 
-  @Get('discord/redirect')
+  // @Post('discord/redirect')
+  // @UseGuards(DiscordGuard)
+  // discordRedirect(
+  //   @Req() req: Request,
+  //   @Res() res: Response,
+  //   @Body() dto: { password: string; confirmPassword: string },
+  // ) {
+  //   return this.authService.redirectDiscordAuth(req, dto, res);
+  // }
+
+  @Post('discord/redirect')
   @UseGuards(DiscordGuard)
-  discordRedirect(@Req() req: Request, @Res() res: Response) {
-    return this.authService.discordAuth(req, res);
+  discordRedirect(
+    @Req() req: Request,
+    @Res() res: Response,
+    // @Body() dto: { password: string; confirmPassword: string },
+  ) {
+    return this.authService.redirectDiscordAuth(req, res);
   }
 
   // @Get('check')
@@ -61,7 +75,7 @@ export class AuthController {
   // }
 
   @Delete('logout')
-  @UseGuards(UltimateGuard)
+  @UseGuards(JWTGuard)
   logout(@Res() res: Response) {
     return this.authService.logout(res);
   }
