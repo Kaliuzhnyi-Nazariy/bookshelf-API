@@ -16,5 +16,5 @@ export class AddBook {
 
   imageUrl?: string;
 
-  owner: Types.ObjectId;
+  owner?: Types.ObjectId;
 }

@@ -14,13 +14,14 @@ export class Book {
   @IsNotEmpty()
   author: string;
 
+  @Prop({ type: String })
   @IsString()
   @IsOptional()
   descripionAndOpinion?: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId || String, ref: 'User' })
   @IsString()
-  owner: Types.ObjectId;
+  owner?: Types.ObjectId | string;
 
   @Prop({ type: String })
   @IsString()
