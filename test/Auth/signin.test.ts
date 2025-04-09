@@ -23,8 +23,9 @@ export function signIn() {
         .expectCookiesLike('Max-Age', /.+/)
         .expectCookiesLike('Path', '/')
         .stores('userAt', 'accessToken')
-        // .stores('accessToken', 'hello')
-        .inspect();
+        .stores('userId', '_id');
+      // .stores('accessToken', 'hello')
+      // .inspect();
     });
     it('should sign in with token', async () => {
       await pactum
@@ -40,6 +41,7 @@ export function signIn() {
         .expectCookiesLike('Expires', /.+/)
         .expectCookiesLike('Max-Age', /.+/)
         .expectCookiesLike('Path', '/');
+      // .inspect();
     });
     it('should not sign in because of lack of email', async () => {
       await pactum
@@ -48,25 +50,54 @@ export function signIn() {
         .withBody({
           password: dto.password,
         })
-        .expectStatus(400);
+        .expectStatus(400)
+        .expectBody({
+          error: 'Bad Request',
+          message: ['email should not be empty', 'email must be an email'],
+          statusCode: 400,
+        });
+      // .inspect();
     });
+
     it('should not sign in because of lack of password', async () => {
       await pactum
         .spec()
         .post('/auth/signin')
+        .withBearerToken('$S{userAt}')
         .withBody({
           email: dto.email,
         })
-        .expectStatus(400);
+        .expectStatus(400)
+        .expectBody({
+          error: 'Bad Request',
+          message: [
+            'password must match /^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$/ regular expression',
+            'password should not be empty',
+            'password must be a string',
+          ],
+          statusCode: 400,
+        });
+      // .inspect();
     });
-    it('should not sign in because of lack of password', async () => {
+
+    it('should not sign in because of lack of info', async () => {
       await pactum
         .spec()
         .post('/auth/signin')
-        .withBody({
-          email: dto.email,
-        })
-        .expectStatus(400);
+        .withBody({})
+        .expectStatus(400)
+        .expectBody({
+          error: 'Bad Request',
+          message: [
+            'email should not be empty',
+            'email must be an email',
+            'password must match /^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$/ regular expression',
+            'password should not be empty',
+            'password must be a string',
+          ],
+          statusCode: 400,
+        });
+      // .inspect();
     });
   });
 }

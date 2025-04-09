@@ -23,13 +23,12 @@ export function signUp() {
         .expectCookiesLike('Expires', /.+/)
         .expectCookiesLike('Max-Age', /.+/)
         .expectCookiesLike('Path', '/')
-        .stores('accessToken', 'res.cookies.accessToken')
-        .inspect();
+        .stores('accessToken', 'accessToken');
     });
 
     describe('Sign up', () => {
-      it('should return an 400 error as no email', () => {
-        pactum
+      it('should return an 400 error as no email', async () => {
+        await pactum
           .spec()
           .post('/auth/signup')
           .withBody({
@@ -40,8 +39,8 @@ export function signUp() {
           .expectStatus(400);
       });
 
-      it('should return an 400 error as no name', () => {
-        pactum
+      it('should return an 400 error as no name', async () => {
+        await pactum
           .spec()
           .post('/auth/signup')
           .withBody({
