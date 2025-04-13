@@ -19,6 +19,9 @@ export class Book {
   @IsOptional()
   descripionAndOpinion?: string;
 
+  @Prop({ type: Boolean, default: false })
+  favorite?: boolean;
+
   @Prop({ type: Types.ObjectId || String, ref: 'User' })
   @IsString()
   owner?: Types.ObjectId | string;

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class AddBook {
@@ -13,6 +13,10 @@ export class AddBook {
   @IsString()
   @IsOptional()
   descripionAndOpinion?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  favorite?: boolean;
 
   imageUrl?: string;
 
