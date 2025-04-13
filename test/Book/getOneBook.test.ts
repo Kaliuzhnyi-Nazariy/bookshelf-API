@@ -8,6 +8,7 @@ const bookReceived: Book = {
   author: 'Somebody',
   descripionAndOpinion: 'How to attack your goals with 10x streingth',
   imageUrl: '',
+  favorite: false,
 };
 
 const bookReceivedTwo: Book = {
@@ -15,6 +16,7 @@ const bookReceivedTwo: Book = {
   author: 'Somebody',
   descripionAndOpinion: '',
   imageUrl: '',
+  favorite: false,
 };
 
 export function getOneBook() {
