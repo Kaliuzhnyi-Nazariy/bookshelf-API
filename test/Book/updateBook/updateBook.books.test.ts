@@ -17,6 +17,7 @@ export const readyBookOne: Book = {
   author: 'Napoleon Hill',
   descripionAndOpinion: 'good book from famous author',
   imageUrl: '',
+  favorite: false,
 };
 
 export const readyBookTwo: Book = {
@@ -24,6 +25,7 @@ export const readyBookTwo: Book = {
   author: 'Somebody',
   descripionAndOpinion: '',
   imageUrl: '',
+  favorite: false,
 };
 
 export const readyBookThree: Book = {
@@ -31,6 +33,7 @@ export const readyBookThree: Book = {
   author: 'Somebody',
   descripionAndOpinion: '',
   imageUrl: '',
+  favorite: false,
 };
 
 export const readyBookFour: Book = {
@@ -38,6 +41,7 @@ export const readyBookFour: Book = {
   author: 'Somebody',
   descripionAndOpinion: 'good book from famous author',
   imageUrl: '',
+  favorite: false,
 };
 
 export const readyBookFive: Book = {
@@ -45,4 +49,5 @@ export const readyBookFive: Book = {
   author: 'Somebody',
   descripionAndOpinion: 'How to attack your goals with 10x streingth',
   imageUrl: '',
+  favorite: false,
 };

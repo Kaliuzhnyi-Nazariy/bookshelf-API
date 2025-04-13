@@ -12,6 +12,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { addBook, getAllBooks, getOneBook, successful_addBook } from './Book';
 import { updateBook } from './Book/updateBook';
 import { deleteBook } from './Book/deleteBook';
+import { patchFunc } from './Book/PatchBook';
 
 describe('App e2e', () => {
   let app: INestApplication;
@@ -56,6 +57,7 @@ describe('App e2e', () => {
   addBook();
   updateBook();
   getOneBook();
+  patchFunc();
   deleteBook();
   successful_addBook();
   deleteUser();
