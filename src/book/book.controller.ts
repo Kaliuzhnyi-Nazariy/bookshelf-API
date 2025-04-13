@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   UploadedFile,
@@ -54,6 +55,14 @@ export class BookController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.bookService.updateBook(userId, bookId, dto, file);
+  }
+
+  @Patch(':bookId/favorite')
+  uodateFavorite(
+    @GetUser('_id') userId: Types.ObjectId,
+    @Param('bookId') bookId: Types.ObjectId,
+  ) {
+    return this.bookService.favoriteBook(userId, bookId);
   }
 
   @Delete(':bookId')

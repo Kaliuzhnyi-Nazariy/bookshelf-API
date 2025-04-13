@@ -86,11 +86,28 @@ export class BookService {
           dto.descripionAndOpinion || bookToUpdate.descripionAndOpinion,
         author: dto.author || bookToUpdate.author,
         imageUrl: dto.imageUrl || bookToUpdate.imageUrl,
+        favorite: bookToUpdate.favorite,
       },
       { new: true },
     );
 
     return updatedBook;
+  }
+
+  async favoriteBook(userId: Types.ObjectId, bookId: Types.ObjectId) {
+    const book = await this.BookSchema.findOne({ _id: bookId, owner: userId });
+
+    if (!book) throw new NotFoundException('Book not found');
+
+    const updBook = await this.BookSchema.findByIdAndUpdate(
+      bookId,
+      {
+        favorite: !book.favorite,
+      },
+      { new: true },
+    );
+
+    return updBook;
   }
 
   async deleteBook(userId: Types.ObjectId, bookId: Types.ObjectId) {
