@@ -7,7 +7,7 @@ export function deleteUser() {
         .spec()
         .delete('/users')
         .withBearerToken('$S{userAt}')
-        .inspect()
+        // .inspect()
         .expectStatus(204);
     });
 
@@ -16,7 +16,7 @@ export function deleteUser() {
         .spec()
         .delete('/users')
         .withBearerToken('$S{userAtasd}')
-        .inspect()
+        // .inspect()
         .expectStatus(401);
     });
   });
