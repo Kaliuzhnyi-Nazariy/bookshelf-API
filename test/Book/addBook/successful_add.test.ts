@@ -18,11 +18,13 @@ export function successful_addBook() {
   const readyBook: Book = {
     title: 'think and grow rich',
     author: 'Calagher',
+    favorite: false,
   };
 
   const readyBook2: Book = {
     title: 'think and grow rich',
     author: 'Napoleon Hill',
+    favorite: false,
   };
 
   describe('Book added successfuly', () => {
