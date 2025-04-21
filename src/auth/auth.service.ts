@@ -12,16 +12,14 @@ import { User } from '../mongodb/schemas';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import * as argon from 'argon2';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
+import { CreateTokenService } from 'src/helper/create-token.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private tokenService: CreateTokenService,
     @InjectModel(User.name) private userSchema: Model<User>,
-    private jwt: JwtService,
-    private config: ConfigService,
     @InjectModel(User.name) private User: Model<User>,
   ) {}
 
@@ -34,7 +32,7 @@ export class AuthService {
 
     if (!psswCompare) throw new ForbiddenException('Wrong credentials!');
 
-    const accessToken = await this.signToken(user.email, user._id);
+    const accessToken = await this.tokenService.signToken(user.email, user._id);
 
     res.cookie('accessToken', accessToken, {
       maxAge: 23 * 60 * 60 * 1000,
@@ -47,6 +45,8 @@ export class AuthService {
 
   async signup(dto: CreateUser, @Res() res: Response) {
     const isUser = await this.userSchema.findOne({ email: dto.email });
+
+    // console.log('triggered');
 
     if (isUser)
       throw new ConflictException(
@@ -64,7 +64,7 @@ export class AuthService {
     });
 
     const { name, email, _id } = newUser;
-    const accessToken = await this.signToken(email, _id);
+    const accessToken = await this.tokenService.signToken(email, _id);
 
     res.cookie('accessToken', accessToken, {
       maxAge: 23 * 60 * 60 * 1000,
@@ -215,7 +215,7 @@ export class AuthService {
 
     if (user) {
       const { _id } = user as { _id: Types.ObjectId };
-      const accessToken = await this.signToken(email, _id);
+      const accessToken = await this.tokenService.signToken(email, _id);
       return res
         .status(200)
         .cookie('accessToken', accessToken, {
@@ -232,7 +232,10 @@ export class AuthService {
       });
 
       //create and set jwt token
-      const accessToken = await this.signToken(newUser.email, newUser._id);
+      const accessToken = await this.tokenService.signToken(
+        newUser.email,
+        newUser._id,
+      );
 
       return res.status(201).cookie('accessToken', accessToken).json({
         _id: newUser?._id,
@@ -259,25 +262,13 @@ export class AuthService {
   // }
 
   logout(@Res() res: Response) {
-    res.clearCookie('accessToken');
+    res.clearCookie('accessToken', {
+      path: '/',
+      sameSite: 'none',
+      secure: true,
+    });
     res.setHeader('Authorization', '');
     return res.status(204).json();
     // const user = await this.userSchema.findById();ExceptionsHandler
-  }
-
-  async signToken(email: string, _id: Types.ObjectId): Promise<string> {
-    const payload = {
-      email,
-      _id,
-    };
-
-    const secret: string = this.config.get('JWT_SECRET') as string;
-
-    const token: string = await this.jwt.signAsync(payload, {
-      expiresIn: '23h',
-      secret,
-    });
-
-    return token;
   }
 }

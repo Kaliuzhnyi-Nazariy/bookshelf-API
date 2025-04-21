@@ -14,6 +14,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 // import { JwtModule } from '@nestjs/jwt';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CreateTokenService } from './helper/create-token.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     MongooseModule.forRoot(process.env.DB_CONNECT_LINK as string),
     CloudinaryModule,
   ],
-  providers: [CloudinaryService],
+  providers: [CloudinaryService, JwtService, CreateTokenService],
   // exports: [MongodbModule],
   // controllers: [BookController],
   // providers: [UsersService, AuthService, MongodbService],

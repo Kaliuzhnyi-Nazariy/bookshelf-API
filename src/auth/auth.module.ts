@@ -5,6 +5,7 @@ import { DiscordStrategy, JwtStrategy } from './strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { User, UserSchema } from '../mongodb/schemas';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CreateTokenService } from 'src/helper/create-token.service';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { MongooseModule } from '@nestjs/mongoose';
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, DiscordStrategy],
+  providers: [AuthService, JwtStrategy, DiscordStrategy, CreateTokenService],
 })
 export class AuthModule {}

@@ -33,8 +33,9 @@ export class UsersController {
   updateUser(
     @GetUser('_id') userId: string | Types.ObjectId,
     @Body() dto: UpdateUserDTO,
+    @Res() res: Response,
   ) {
-    return this.usersService.updateUser(userId, dto);
+    return this.usersService.updateUser(userId, dto, res);
   }
 
   @Delete()

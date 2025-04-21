@@ -12,15 +12,21 @@ import { Book, User } from '../mongodb/schemas';
 import { UpdateUserDTO } from './dto';
 import * as argon from 'argon2';
 import { Response } from 'express';
+import { CreateTokenService } from 'src/helper/create-token.service';
 
 @Injectable()
 export class UsersService {
   constructor(
+    private tokenService: CreateTokenService,
     @InjectModel(User.name) private UserSchema: Model<User>,
     @InjectModel(Book.name) private BookSchema: Model<Book>,
   ) {}
 
-  async updateUser(userId: string | Types.ObjectId, dto: UpdateUserDTO) {
+  async updateUser(
+    userId: string | Types.ObjectId,
+    dto: UpdateUserDTO,
+    res: Response,
+  ) {
     const user = await this.UserSchema.findById(userId);
 
     if (!user) throw new ForbiddenException('User not found');
@@ -51,7 +57,11 @@ export class UsersService {
       }
       const { _id, name, email } = newUser;
 
-      return { _id, name, email };
+      const accessToken = await this.tokenService.signToken(email, _id);
+
+      res.cookie('accessToken', accessToken);
+
+      return res.json({ _id, name, email });
     } catch (error: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.code === 11000)
@@ -72,12 +82,15 @@ export class UsersService {
   async deleteUser(userId: Types.ObjectId, @Res() res: Response) {
     const user = await this.UserSchema.findById(userId);
 
-    await this.BookSchema.deleteMany({ owner: userId });
-
     if (!user) throw new NotFoundException('User not found!');
+
+    await this.BookSchema.deleteMany({ owner: userId });
 
     await this.UserSchema.findByIdAndDelete(userId);
 
-    return res.clearCookie('accessToken').status(204).json();
+    return res
+      .clearCookie('accessToken', { path: '/', sameSite: 'none', secure: true })
+      .status(204)
+      .json();
   }
 }
