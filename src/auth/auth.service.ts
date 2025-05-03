@@ -36,6 +36,8 @@ export class AuthService {
 
     res.cookie('accessToken', accessToken, {
       maxAge: 23 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: 'none',
     });
 
     const { email, name, _id } = user;
@@ -68,6 +70,9 @@ export class AuthService {
 
     res.cookie('accessToken', accessToken, {
       maxAge: 23 * 60 * 60 * 1000,
+      secure: true,
+
+      sameSite: 'none',
     });
 
     return res.send({ name, email, _id, accessToken });
@@ -80,121 +85,14 @@ export class AuthService {
 
   discordAuth(@Req() req: Request | undefined, @Res() res: Response) {
     // res.send('hello');
-    res.cookie('userDisInfo', req?.user);
-    // console.log(req?.user);
-
-    // if (!req?.user) {
-    //   return res
-    //     .status(401)
-    //     .json({ message: 'Unauthorized: No user data received' });
-    // }
-
-    // const { name, email } = req?.user as {
-    //   name?: string;
-    //   email?: string;
-    // };
-
-    // if (!name || !email)
-    //   return res.status(404).json({ message: 'Wrong credentials! Try again!' });
-
-    // const user = await this.User.findOne({ email }).select('-password -__v');
-
-    // console.log(user);
-
-    // //create and set jwt token
-
-    // const { _id } = user as { _id: Types.ObjectId };
-
-    // if (user) {
-    //   const accessToken = await this.signToken(email, _id);
-    //   return res
-    //     .status(200)
-    //     .json(user)
-    //     .cookie('accessToken', accessToken, {
-    //       maxAge: 23 * 60 * 60 * 1000,
-    //     });
-    // }
-
-    // try {
-    //   const newUser = await this.User.create({
-    //     name,
-    //     email,
-    //     password: 'Abcde12!',
-    //   });
-
-    //   const accessToken = await this.signToken(newUser.email, newUser._id);
-
-    //   //create and set jwt token
-
-    //   return res
-    //     .status(201)
-    //     .json({
-    //       _id: newUser?._id,
-    //       name: newUser.name,
-    //       email: newUser.email,
-    //       books: newUser.books,
-    //     })
-    //     .cookie('accessToken', accessToken);
-    // } catch (error) {
-    //   console.error('Error creating user:', error);
-    //   return res
-    //     .status(500)
-    //     .json({ message: 'Internal server error in /discord' });
-    // }
+    res.cookie('userDisInfo', req?.user, { secure: true, sameSite: 'none' });
     return res.status(302).json();
   }
 
-  // here will be created user using email and nickname used in Discord (with standart model)
-
-  // async redirectDiscordAuth(
-  //   @Req() req: Request | undefined,
-  //   dto: { password: string; confirmPassword: string },
-  //   @Res() res: Response,
-  // ) {
-  //   if (!req?.user) throw new NotFoundException('User is not found!');
-
-  //   console.log('req.user: ', req.user);
-
-  //   // const { password, confirmPassword } = dto;
-
-  //   // if (password !== confirmPassword)
-  //   //   throw new BadRequestException('Passwords do not match');
-
-  //   const password = 'Abcde12!';
-
-  //   const { _id } = req.user as { _id: Types.ObjectId };
-
-  //   // const hashedPassword = await argon.hash(password);
-
-  //   try {
-  //     const user = await this.User.findByIdAndUpdate(
-  //       _id,
-  //       // {
-  //       //   password: hashedPassword,
-  //       // },
-  //       {
-  //         password,
-  //       },
-  //       { new: true },
-  //     ).select('-password -__v');
-  //     // res.send('hello');
-
-  //     // return res.redirect('http://localhost:3500/auth/check');
-  //     return res.status(200).json(user);
-  //   } catch (error) {
-  //     return res
-  //       .status(500)
-  //       .json({ message: 'Internal server error in /discord/redirect', error });
-  //   }
-  // }
-
   async redirectDiscordAuth(
     @Req() req: Request | undefined,
-    // dto: { password: string; confirmPassword: string },
     @Res() res: Response,
   ) {
-    // res.cookie('userDisInfo', req?.user);
-
     if (!req?.user) {
       return res
         .status(401)

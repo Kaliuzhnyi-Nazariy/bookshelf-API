@@ -59,7 +59,10 @@ export class UsersService {
 
       const accessToken = await this.tokenService.signToken(email, _id);
 
-      res.cookie('accessToken', accessToken);
+      res.cookie('accessToken', accessToken, {
+        secure: true,
+        sameSite: 'none',
+      });
 
       return res.json({ _id, name, email });
     } catch (error: any) {
@@ -90,7 +93,7 @@ export class UsersService {
 
     return res
       .clearCookie('accessToken', { path: '/', sameSite: 'none', secure: true })
-      .status(204)
-      .json();
+      .status(200)
+      .json(user);
   }
 }
