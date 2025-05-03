@@ -25,7 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             return req.headers['set-cookie'][0].split('=')[1];
           }
           if (req.headers.authorization?.startsWith('Bearer ')) {
-            console.log('req.headers: ', req.headers);
             return req.headers.authorization.split(' ')[1]; // Remove "Bearer" prefix
           }
           return null;
