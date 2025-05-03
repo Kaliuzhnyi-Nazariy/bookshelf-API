@@ -8,7 +8,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['http://my-fav-bookshelf-app.netlify.app'], // it is for a frontend URL
+    origin: [
+      'http://my-fav-bookshelf-app.netlify.app',
+      'http://localhost:4200',
+    ], // it is for a frontend URL
     // origin: 'http://my-fav-bookshelf-app.netlify.app', // it is for a frontend URL
 
     // origin: '*', // it is for a frontend URL
