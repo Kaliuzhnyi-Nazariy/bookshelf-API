@@ -85,7 +85,7 @@ export class BookService {
         descripionAndOpinion:
           dto.descripionAndOpinion || bookToUpdate.descripionAndOpinion,
         author: dto.author || bookToUpdate.author,
-        imageUrl: dto.imageUrl || bookToUpdate.imageUrl,
+        imageUrl: imageUrl || bookToUpdate.imageUrl,
         favorite: bookToUpdate.favorite,
       },
       { new: true },
@@ -120,6 +120,6 @@ export class BookService {
 
     await this.BookSchema.findByIdAndDelete(bookId);
 
-    return { message: 'Deleted successfully!' };
+    return bookToDelete;
   }
 }
