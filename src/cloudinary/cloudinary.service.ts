@@ -20,8 +20,8 @@ export class CloudinaryService {
             folder: 'bookshelf',
             transformation: [
               {
-                width: 400,
-                height: 800,
+                width: 80,
+                height: 150,
                 crop: 'limit',
               },
               {
