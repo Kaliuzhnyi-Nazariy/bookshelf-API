@@ -60,8 +60,10 @@ export class UsersService {
       const accessToken = await this.tokenService.signToken(email, _id);
 
       res.cookie('accessToken', accessToken, {
+        maxAge: 23 * 60 * 60 * 1000,
         secure: true,
         sameSite: 'none',
+        httpOnly: true,
       });
 
       return res.json({ _id, name, email });
