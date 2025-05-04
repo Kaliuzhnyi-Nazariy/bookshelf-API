@@ -38,6 +38,7 @@ export class AuthService {
       maxAge: 23 * 60 * 60 * 1000,
       secure: true,
       sameSite: 'none',
+      httpOnly: true,
     });
 
     const { email, name, _id } = user;
@@ -68,11 +69,21 @@ export class AuthService {
     const { name, email, _id } = newUser;
     const accessToken = await this.tokenService.signToken(email, _id);
 
+    // res.cookie('accessToken', accessToken, {
+    //   maxAge: 23 * 60 * 60 * 1000,
+    //   // secure: true,
+    //   httpOnly: true,
+    //   // sameSite: 'none',
+    //   path: '/',
+    //   domain: 'my-fav-bookshelf-app.netlify.app',
+    // });
+
     res.cookie('accessToken', accessToken, {
       maxAge: 23 * 60 * 60 * 1000,
-      secure: true,
-
-      sameSite: 'none',
+      httpOnly: true,
+      sameSite: 'lax', // or 'strict' for tighter security
+      secure: false,
+      path: '/',
     });
 
     return res.send({ name, email, _id, accessToken });
@@ -160,13 +171,14 @@ export class AuthService {
   // }
 
   logout(@Res() res: Response) {
-    res.clearCookie('accessToken', {
-      path: '/',
-      sameSite: 'none',
-      secure: true,
-    });
-    res.setHeader('Authorization', '');
-    return res.status(204).json();
+    // res.clearCookie('accessToken', {
+    //   path: '/',
+    //   sameSite: 'none',
+    //   secure: true,
+    // });
+    res.clearCookie('accessToken');
+    // res.setHeader('Authorization', '');
+    return res.status(204).json().end();
     // const user = await this.userSchema.findById();ExceptionsHandler
   }
 }

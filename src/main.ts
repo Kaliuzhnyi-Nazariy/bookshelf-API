@@ -13,10 +13,15 @@ async function bootstrap() {
     //   'http://localhost:4200',
     // ], // it is for a frontend URL
     // origin: 'http://my-fav-bookshelf-app.netlify.app', // it is for a frontend URL
-    origin: true,
     // origin: '*', // it is for a frontend URL
     // origin: process.env.DEV_FRONTEND_LINK, // it is for a frontend URL
+    origin: [
+      'https://my-fav-bookshelf-app.netlify.app',
+      'http://localhost:4200',
+    ],
     credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept',
   });
 
   app.use(cookieParser());
