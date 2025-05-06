@@ -16,8 +16,6 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => {
-          console.log(req.cookies['accessToken']);
-
           if (req.cookies['accessToken']) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return req.cookies['accessToken'];
