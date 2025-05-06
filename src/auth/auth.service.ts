@@ -125,10 +125,15 @@ export class AuthService {
     if (user) {
       const { _id } = user as { _id: Types.ObjectId };
       const accessToken = await this.tokenService.signToken(email, _id);
+
       return res
         .status(200)
         .cookie('accessToken', accessToken, {
           maxAge: 23 * 60 * 60 * 1000,
+          httpOnly: true,
+          sameSite: 'lax', // or 'strict' for tighter security
+          secure: false,
+          path: '/',
         })
         .json(user);
     }
@@ -176,7 +181,13 @@ export class AuthService {
     //   sameSite: 'none',
     //   secure: true,
     // });
-    res.clearCookie('accessToken');
+    res.clearCookie('accessToken', {
+      maxAge: 23 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: 'lax', // or 'strict' for tighter security
+      secure: false,
+      path: '/',
+    });
     // res.setHeader('Authorization', '');
     return res.status(204).json().end();
     // const user = await this.userSchema.findById();ExceptionsHandler

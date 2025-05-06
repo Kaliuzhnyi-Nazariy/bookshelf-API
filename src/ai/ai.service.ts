@@ -31,7 +31,7 @@ export class AiService {
       return 'Add favorite books for request!';
     }
 
-    this.booksForRequest = booksTitles?.join(', ');
+    this.booksForRequest = booksTitles.join(', ');
 
     const request = await fetch(this.link!, {
       method: 'POST',
