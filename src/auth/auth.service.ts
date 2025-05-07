@@ -132,7 +132,7 @@ export class AuthService {
           maxAge: 23 * 60 * 60 * 1000,
           httpOnly: true,
           sameSite: 'lax', // or 'strict' for tighter security
-          secure: false,
+          secure: true,
           path: '/',
         })
         .json(user);
@@ -185,7 +185,7 @@ export class AuthService {
       maxAge: 23 * 60 * 60 * 1000,
       httpOnly: true,
       sameSite: 'lax', // or 'strict' for tighter security
-      secure: false,
+      secure: true,
       path: '/',
     });
     // res.setHeader('Authorization', '');
