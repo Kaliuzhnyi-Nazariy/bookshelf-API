@@ -39,6 +39,7 @@ export class AuthService {
       secure: true,
       sameSite: 'none',
       httpOnly: true,
+      path: '/',
     });
 
     const { email, name, _id } = user;
@@ -81,7 +82,7 @@ export class AuthService {
     res.cookie('accessToken', accessToken, {
       maxAge: 23 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: 'lax', // or 'strict' for tighter security
+      sameSite: 'none', // or 'strict' for tighter security
       secure: true,
       path: '/',
     });
@@ -176,20 +177,13 @@ export class AuthService {
   // }
 
   logout(@Res() res: Response) {
-    // res.clearCookie('accessToken', {
-    //   path: '/',
-    //   sameSite: 'none',
-    //   secure: true,
-    // });
     res.clearCookie('accessToken', {
       maxAge: 23 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: 'lax', // or 'strict' for tighter security
+      sameSite: 'none',
       secure: true,
       path: '/',
     });
-    // res.setHeader('Authorization', '');
     return res.status(204).json().end();
-    // const user = await this.userSchema.findById();ExceptionsHandler
   }
 }
